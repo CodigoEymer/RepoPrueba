@@ -51,5 +51,5 @@ Asesor:
     Resident Asesor_Tmp2;
     Drop Table Asesor_Tmp2;
 
-STORE Asesor INTO [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CLIENTETRES/_Asesor.qvd];
+STORE Asesor INTO [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CLIENTETRES_/_Asesor.qvd];
 Drop Table Asesor;
