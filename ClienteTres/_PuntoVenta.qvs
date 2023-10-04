@@ -25,7 +25,7 @@ PuntoVenta_Tmp1:
         FORMATO                 as Formato,
         CIRCUITO_ID             as Distrito
     FROM 
-    [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/CINECOLOR/IPV_PuntoVenta.qvd]
+    [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/CLIIENTETRES/IPV_PuntoVenta.qvd]
     (qvd);
 
 /*--------------*/
@@ -103,5 +103,5 @@ PuntoVenta:
     Resident PuntoVenta_Tmp2;
     DROP Table PuntoVenta_Tmp2;
 
-STORE PuntoVenta INTO [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CINECOLOR/_PuntoVenta.qvd];
+STORE PuntoVenta INTO [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CLIIENTETRES/_PuntoVenta.qvd];
 Drop Table PuntoVenta;
