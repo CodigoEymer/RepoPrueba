@@ -15,7 +15,7 @@ Asesor_Tmp1:
         ROL,
         NOMBRE_JEFE
     FROM 
-    [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/CLIENTECUATRO/IPV_Asesor.qvd]
+    [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/CLIIENTEUNO/IPV_Asesor.qvd]
     (qvd);
 
 /**************** Transformación ****************/
@@ -51,5 +51,5 @@ Asesor:
     Resident Asesor_Tmp2;
     Drop Table Asesor_Tmp2;
 
-STORE Asesor INTO [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CLIENTECUATRO/_Asesor.qvd];
+STORE Asesor INTO [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CLIIENTEUNO/_Asesor.qvd];
 Drop Table Asesor;
