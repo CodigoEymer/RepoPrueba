@@ -28,7 +28,7 @@ PlanesComerciales_Tmp1:
 		FECHA_REPORTE,
 		NOMBRE_ARCHIVO
 	FROM
-	[lib://COMP_Stage (eficacia_admin_analitica)\SGI\Colombia\CLIIENTETRES\PlanesComerciales_*.qvd]
+	[lib://COMP_Stage (eficacia_admin_analitica)\SGI\Colombia\CLIENTETRES\PlanesComerciales_*.qvd]
 	(qvd);
 
 /* -------------------- */
@@ -55,7 +55,7 @@ Parametrizacion_Tmp1:
 		SECUENCIA_RELACIONADA_SUBTIPO,
 		ID_TIPO_IMPLEMENTACION
 	FROM 
-	[lib://COMP_Stage (eficacia_admin_analitica)\SGI\Colombia\CLIIENTETRES/Parametrizacion_Planes.qvd]
+	[lib://COMP_Stage (eficacia_admin_analitica)\SGI\Colombia\CLIENTETRES/Parametrizacion_Planes.qvd]
 	(qvd);
 
 /* ***** -----|Transformacion de Captura de Informacion|----- ***** */
@@ -298,5 +298,5 @@ PlanesComerciales:
 	Resident Planes_Comerciales_Tmp2;
 	DROP Table Planes_Comerciales_Tmp2;
 
-Store PlanesComerciales into [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CLIIENTETRES/_PlanesComerciales.qvd];
+Store PlanesComerciales into [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CLIENTETRES/_PlanesComerciales.qvd];
 Drop Table PlanesComerciales;
