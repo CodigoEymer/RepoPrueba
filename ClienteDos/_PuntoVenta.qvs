@@ -98,8 +98,8 @@ PuntoVenta:
         Regional			as PuntoVenta.Regional,
         Formato             as PuntoVenta.Formato,
         Latitud_Pdv         as PuntoVenta.Latitud,
-        Longitud_Pdv        as PuntoVenta.Longitud
-        
+        Longitud_Pdv        as PuntoVenta.Longitud,
+        "CLIENTEDOS"        as PuntoVenta.NombreCliente       
     Resident PuntoVenta_Tmp2;
     DROP Table PuntoVenta_Tmp2;
 
