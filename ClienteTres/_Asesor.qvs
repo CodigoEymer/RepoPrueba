@@ -47,7 +47,8 @@ Asesor:
         replace(replace(NombreCompleto,chr(10),''),chr(13),'') 	as Asesor.NombreCompleto,
         replace(replace(Observaciones,chr(10),''),chr(13),'')	as Asesor.Observaciones,
         replace(replace(Rol,chr(10),''),chr(13),'')				as Asesor.Rol,
-        replace(replace(Jefe,chr(10),''),chr(13),'')            as Asesor.Jefe
+        replace(replace(Jefe,chr(10),''),chr(13),'')            as Asesor.Jefe,
+        'CLIENTETRES'                                           as Asesor.NombreCLiente
     Resident Asesor_Tmp2;
     Drop Table Asesor_Tmp2;
 
