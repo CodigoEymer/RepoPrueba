@@ -1,0 +1,55 @@
+﻿/*-----------------------------------------------------------------------------------------------------------------------------------------------
+Compañia: 		Eficacia S.A
+Proceso:		Transformacion Punto de Venta
+Desarrollador: 	Sergio Grisales Madera
+Email:			sergio_grisales@eficacia.com.co
+Fecha			2023/01/27 (YYYY/MM/DD)
+-----------------------------------------------------------------------------------------------------------------------------------------------*/
+Asesor_Tmp1:
+    LOAD
+        ASESOR_ID,
+        CEDULA,
+        NOMBRE,
+        APELLIDO,
+        OBSERVACIONES,
+        ROL,
+        NOMBRE_JEFE
+    FROM 
+    [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/CINECOLOR/IPV_Asesor.qvd]
+    (qvd);
+
+/**************** Transformación ****************/
+NoConcatenate
+Asesor_Tmp2:
+    LOAD
+        ASESOR_ID                           as Id,
+        CEDULA                              as Cedula,
+        Capitalize(NOMBRE)                  as Nombre,
+        Capitalize(APELLIDO)                as Apellido,
+        Capitalize(NOMBRE&' '&APELLIDO) 	as NombreCompleto,
+        OBSERVACIONES			            as Observaciones,
+        ROL						            as Rol,
+        NOMBRE_JEFE                         as Jefe
+    Resident Asesor_Tmp1
+    Where
+    WildMatch(ROL, 'Supervisor*')
+    And Not WildMatch(NOMBRE, 'Usuario');
+    Drop Table Asesor_Tmp1;
+
+/*----------*/
+NoConcatenate
+Asesor:
+    LOAD Distinct
+        Id                                                      as SK.Persona,
+        Cedula                                                  as Asesor.Cedula,
+        replace(replace(Nombre,chr(10),''),chr(13),'')          as Asesor.Nombre,         
+        replace(replace(Apellido,chr(10),''),chr(13),'')        as Asesor.Apellido,
+        replace(replace(NombreCompleto,chr(10),''),chr(13),'') 	as Asesor.NombreCompleto,
+        replace(replace(Observaciones,chr(10),''),chr(13),'')	as Asesor.Observaciones,
+        replace(replace(Rol,chr(10),''),chr(13),'')				as Asesor.Rol,
+        replace(replace(Jefe,chr(10),''),chr(13),'')            as Asesor.Jefe
+    Resident Asesor_Tmp2;
+    Drop Table Asesor_Tmp2;
+
+STORE Asesor INTO [lib://COMP_DataMart (eficacia_admin_analitica)/SGI/Colombia/CINECOLOR/_Asesor.qvd];
+Drop Table Asesor;
