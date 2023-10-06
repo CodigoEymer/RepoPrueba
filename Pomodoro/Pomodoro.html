@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        #timer {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        #buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        #settings {
+            margin-top: 20px;
+        }
+
+        #activities {
+            margin-top: 20px;
+        }
+
+        #messages {
+            margin-top: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+        }
+
+        .activity-item button {
+            margin-left: 10px;
+        }
+
+        .selected {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pomodoro App</h1>
+    
+    <div id="timer">25:00</div>
+    
+    <div id="buttons">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pause</button>
+    </div>
+
+    <div id="settings">
+        <h2>Settings</h2>
+        <label for="pomodoroTime">Pomodoro Time (MM:SS): </label>
+        <input type="text" id="pomodoroTime" placeholder="Enter time">
+        <button onclick="applySettings()">Apply</button>
+    </div>
+
+    <div id="activities">
+        <h2>Activities</h2>
+        <input type="text" id="activityInput" placeholder="Activity Name">
+        <button onclick="addActivity()">Add Activity</button>
+        <ul id="activityList"></ul>
+    </div>
+
+    <div id="messages"></div>
+
+    <script>
+        let timer;
+        let totalSeconds = 1500; // 25 minutes by default
+        let isPaused = true;
+        let currentActivity = null;
+        let pomodoroCount = 0;
+
+        // Cargar actividades almacenadas al cargar la página
+        window.addEventListener("load", loadStoredActivities);
+
+        function startTimer() {
+            const selectedActivity = document.querySelector('.activity-item.selected');
+            if (isPaused) {
+                if (selectedActivity) {
+                    currentActivity = selectedActivity.id;
+                } else {
+                    currentActivity = document.getElementById("activityInput").value;
+                }
+                if (currentActivity.trim() !== "") {
+                    timer = setInterval(updateTimer, 1000);
+                    isPaused = false;
+                } else {
+                    showMessage("Please select or enter a valid activity name!");
+                }
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timer);
+            isPaused = true;
+        }
+
+        function updateTimer() {
+            if (totalSeconds === 0) {
+                clearInterval(timer);
+                showMessage(`Pomodoro completed for ${currentActivity}! Take a break.`);
+                pomodoroCount++;
+                updateActivityList();
+                resetTimer();
+            } else {
+                totalSeconds--;
+                updateDisplay();
+            }
+        }
+
+        function resetTimer() {
+            totalSeconds = parseTime(document.getElementById("pomodoroTime").value) || 1500;
+            updateDisplay();
+            pauseTimer(); // Added to pause the timer after reset
+        }
+
+        function applySettings() {
+            resetTimer();
+        }
+
+        function parseTime(timeString) {
+            const timeArray = timeString.split(":");
+            if (timeArray.length === 2) {
+                const minutes = parseInt(timeArray[0], 10) || 0;
+                const seconds = parseInt(timeArray[1], 10) || 0;
+                return minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function updateDisplay() {
+            const displayMinutes = Math.floor(totalSeconds / 60);
+            const displaySeconds = totalSeconds % 60;
+            const formattedMinutes = displayMinutes < 10 ? "0" + displayMinutes : displayMinutes;
+            const formattedSeconds = displaySeconds < 10 ? "0" + displaySeconds : displaySeconds;
+            document.getElementById("timer").innerText = `${formattedMinutes}:${formattedSeconds}`;
+        }
+
+        function addActivity() {
+            const activityName = document.getElementById("activityInput").value;
+            if (activityName.trim() !== "") {
+                const activityList = document.getElementById("activityList");
+                const existingActivityItem = document.getElementById(activityName);
+
+                if (existingActivityItem) {
+                    showMessage("Activity with the same name already exists!");
+                } else {
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("activity-item");
+                    listItem.id = activityName;
+                    listItem.innerHTML = `${activityName}: <span data-count="0">0</span> Pomodoros
+                        <button onclick="editActivity('${activityName}')">Edit</button>
+                        <button onclick="deleteActivity('${activityName}')">Delete</button>`;
+                    listItem.addEventListener("click", (event) => selectActivity(activityName, event));
+                    activityList.appendChild(listItem);
+                    // Guardar la actividad recién creada
+                    storeActivity(activityName, 0);
+                }
+
+                // Limpiar el campo de entrada
+                document.getElementById("activityInput").value = "";
+            } else {
+                showMessage("Please enter a valid activity name!");
+            }
+        }
+
+        function editActivity(activityName) {
+            const newName = prompt("Enter a new name for the activity:", activityName);
+            if (newName && newName.trim() !== "") {
+                const activityItem = document.getElementById(activityName);
+                activityItem.id = newName;
+                activityItem.innerHTML = `${newName}: ${activityItem.querySelector('span').innerText} Pomodoros
+                    <button onclick="editActivity('${newName}')">Edit</button>
+                    <button onclick="deleteActivity('${newName}')">Delete</button>`;
+                // Actualizar el nombre de la actividad en el almacenamiento
+                updateActivityNameInStorage(activityName, newName);
+            }
+        }
+
+        function deleteActivity(activityName) {
+            const confirmation = confirm(`Are you sure you want to delete the activity "${activityName}"?`);
+            if (confirmation) {
+                const activityItem = document.getElementById(activityName);
+                activityItem.remove();
+                // Eliminar la actividad del almacenamiento
+                removeActivityFromStorage(activityName);
+            }
+        }
+
+        function updateActivityList() {
+            const activityList = document.getElementById("activityList");
+            const existingActivityItem = document.getElementById(currentActivity);
+
+            if (existingActivityItem) {
+                // Si la actividad ya existe en la lista, actualiza su conteo de pomodoros
+                const existingCount = parseInt(existingActivityItem.querySelector('span').dataset.count, 10) || 0;
+                existingActivityItem.querySelector('span').dataset.count = existingCount + 1;
+                existingActivityItem.querySelector('span').innerText = existingCount + 1;
+                // Actualizar el conteo de la actividad en el almacenamiento
+                updateActivityCountInStorage(currentActivity, existingCount + 1);
+            } else {
+                // Si la actividad no existe, crea un nuevo elemento en la lista
+                const listItem = document.createElement("li");
+                listItem.classList.add("activity-item");
+                listItem.id = currentActivity;
+                listItem.innerHTML = `${currentActivity}: <span data-count="1">1</span> Pomodoro
+                    <button onclick="editActivity('${currentActivity}')">Edit</button>
+                    <button onclick="deleteActivity('${currentActivity}')">Delete</button>`;
+                listItem.addEventListener("click", (event) => selectActivity(currentActivity, event));
+                activityList.appendChild(listItem);
+                // Guardar la actividad recién creada
+                storeActivity(currentActivity, 1);
+            }
+        }
+
+        function selectActivity(activityName, event) {
+            // Detener la propagación del evento para evitar conflictos
+            event.stopPropagation();
+
+            // Remover la clase "selected" de todas las actividades
+            const activityItems = document.querySelectorAll('.activity-item');
+            activityItems.forEach(item => item.classList.remove('selected'));
+
+            // Agregar la clase "selected" a la actividad clicada
+            const selectedActivity = document.getElementById(activityName);
+            selectedActivity.classList.add('selected');
+
+            // Actualizar la actividad actual
+            currentActivity = activityName;
+            showMessage(`Selected activity: ${activityName}`);
+        }
+
+        function showMessage(message) {
+            const messagesContainer = document.getElementById("messages");
+            const messageElement = document.createElement("div");
+            messageElement.innerText = message;
+            messagesContainer.appendChild(messageElement);
+        }
+
+        // Funciones para el almacenamiento local
+        function storeActivity(activityName, count) {
+            const storedActivities = getStoredActivities();
+            storedActivities[activityName] = count;
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function removeActivityFromStorage(activityName) {
+            const storedActivities = getStoredActivities();
+            delete storedActivities[activityName];
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function updateActivityNameInStorage(oldName, newName) {
+            const storedActivities = getStoredActivities();
+            storedActivities[newName] = storedActivities[oldName];
+            delete storedActivities[oldName];
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function updateActivityCountInStorage(activityName, count) {
+            const storedActivities = getStoredActivities();
+            storedActivities[activityName] = count;
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function getStoredActivities() {
+            const storedActivitiesString = localStorage.getItem("pomodoroActivities");
+            return storedActivitiesString ? JSON.parse(storedActivitiesString) : {};
+        }
+
+        function loadStoredActivities() {
+            const storedActivities = getStoredActivities();
+            const activityList = document.getElementById("activityList");
+
+            for (const [activityName, count] of Object.entries(storedActivities)) {
+                const listItem = document.createElement("li");
+                listItem.classList.add("activity-item");
+                listItem.id = activityName;
+                listItem.innerHTML = `${activityName}: <span data-count="${count}">${count}</span> Pomodoros
+                    <button onclick="editActivity('${activityName}')">Edit</button>
+                    <button onclick="deleteActivity('${activityName}')">Delete</button>`;
+                listItem.addEventListener("click", (event) => selectActivity(activityName, event));
+                activityList.appendChild(listItem);
+            }
+        }
+    </script>
+</body>
+</html>
