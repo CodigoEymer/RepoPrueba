@@ -29,10 +29,6 @@
             margin-top: 20px;
         }
 
-        #messages {
-            margin-top: 20px;
-        }
-
         .activity-item {
             display: flex;
             justify-content: space-between;
@@ -59,6 +55,7 @@
     <div id="buttons">
         <button onclick="startTimer()">Start</button>
         <button onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
     </div>
 
     <div id="settings">
@@ -74,8 +71,6 @@
         <button onclick="addActivity()">Add Activity</button>
         <ul id="activityList"></ul>
     </div>
-
-    <div id="messages"></div>
 
     <script>
         let timer;
@@ -98,8 +93,6 @@
                 if (currentActivity.trim() !== "") {
                     timer = setInterval(updateTimer, 1000);
                     isPaused = false;
-                } else {
-                    showMessage("Please select or enter a valid activity name!");
                 }
             }
         }
@@ -109,10 +102,16 @@
             isPaused = true;
         }
 
+        function resetTimer() {
+            pauseTimer(); // Added to pause the timer after reset
+            totalSeconds = parseTime(document.getElementById("pomodoroTime").value) || 1500;
+            updateDisplay();
+            // No se inicia automáticamente al resetear
+        }
+
         function updateTimer() {
             if (totalSeconds === 0) {
                 clearInterval(timer);
-                showMessage(`Pomodoro completed for ${currentActivity}! Take a break.`);
                 pomodoroCount++;
                 updateActivityList();
                 resetTimer();
@@ -120,12 +119,6 @@
                 totalSeconds--;
                 updateDisplay();
             }
-        }
-
-        function resetTimer() {
-            totalSeconds = parseTime(document.getElementById("pomodoroTime").value) || 1500;
-            updateDisplay();
-            pauseTimer(); // Added to pause the timer after reset
         }
 
         function applySettings() {
@@ -156,9 +149,7 @@
                 const activityList = document.getElementById("activityList");
                 const existingActivityItem = document.getElementById(activityName);
 
-                if (existingActivityItem) {
-                    showMessage("Activity with the same name already exists!");
-                } else {
+                if (!existingActivityItem) {
                     const listItem = document.createElement("li");
                     listItem.classList.add("activity-item");
                     listItem.id = activityName;
@@ -167,14 +158,11 @@
                         <button onclick="deleteActivity('${activityName}')">Delete</button>`;
                     listItem.addEventListener("click", (event) => selectActivity(activityName, event));
                     activityList.appendChild(listItem);
-                    // Guardar la actividad recién creada
                     storeActivity(activityName, 0);
                 }
 
                 // Limpiar el campo de entrada
                 document.getElementById("activityInput").value = "";
-            } else {
-                showMessage("Please enter a valid activity name!");
             }
         }
 
@@ -186,7 +174,6 @@
                 activityItem.innerHTML = `${newName}: ${activityItem.querySelector('span').innerText} Pomodoros
                     <button onclick="editActivity('${newName}')">Edit</button>
                     <button onclick="deleteActivity('${newName}')">Delete</button>`;
-                // Actualizar el nombre de la actividad en el almacenamiento
                 updateActivityNameInStorage(activityName, newName);
             }
         }
@@ -196,7 +183,6 @@
             if (confirmation) {
                 const activityItem = document.getElementById(activityName);
                 activityItem.remove();
-                // Eliminar la actividad del almacenamiento
                 removeActivityFromStorage(activityName);
             }
         }
@@ -206,14 +192,11 @@
             const existingActivityItem = document.getElementById(currentActivity);
 
             if (existingActivityItem) {
-                // Si la actividad ya existe en la lista, actualiza su conteo de pomodoros
                 const existingCount = parseInt(existingActivityItem.querySelector('span').dataset.count, 10) || 0;
                 existingActivityItem.querySelector('span').dataset.count = existingCount + 1;
                 existingActivityItem.querySelector('span').innerText = existingCount + 1;
-                // Actualizar el conteo de la actividad en el almacenamiento
                 updateActivityCountInStorage(currentActivity, existingCount + 1);
             } else {
-                // Si la actividad no existe, crea un nuevo elemento en la lista
                 const listItem = document.createElement("li");
                 listItem.classList.add("activity-item");
                 listItem.id = currentActivity;
@@ -222,33 +205,20 @@
                     <button onclick="deleteActivity('${currentActivity}')">Delete</button>`;
                 listItem.addEventListener("click", (event) => selectActivity(currentActivity, event));
                 activityList.appendChild(listItem);
-                // Guardar la actividad recién creada
                 storeActivity(currentActivity, 1);
             }
         }
 
         function selectActivity(activityName, event) {
-            // Detener la propagación del evento para evitar conflictos
             event.stopPropagation();
 
-            // Remover la clase "selected" de todas las actividades
             const activityItems = document.querySelectorAll('.activity-item');
             activityItems.forEach(item => item.classList.remove('selected'));
 
-            // Agregar la clase "selected" a la actividad clicada
             const selectedActivity = document.getElementById(activityName);
             selectedActivity.classList.add('selected');
 
-            // Actualizar la actividad actual
             currentActivity = activityName;
-            showMessage(`Selected activity: ${activityName}`);
-        }
-
-        function showMessage(message) {
-            const messagesContainer = document.getElementById("messages");
-            const messageElement = document.createElement("div");
-            messageElement.innerText = message;
-            messagesContainer.appendChild(messageElement);
         }
 
         // Funciones para el almacenamiento local
