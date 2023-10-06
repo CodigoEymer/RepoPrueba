@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eficacia Pomodoro</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #1a1a1a; /* Dark background for Halloween */
+            color: #ffd700; /* Gold text color */
+        }
+
+        h1 {
+            color: #ff4500; /* Orange-Red header color */
+        }
+
+        #timer {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ff6347; /* Tomato timer color */
+        }
+
+        #buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            background-color: #ff8c00; /* Dark Orange button color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #ff4500; /* Lighter orange for hover effect */
+        }
+
+        #settings, #activities {
+            background-color: #333; /* Dark gray background for settings and activities */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #ff8c00; /* Dark Orange header color */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            padding: 10px;
+            width: 60%;
+            margin-bottom: 20px;
+            background-color: #444; /* Dark gray input background */
+            color: #ffd700; /* Gold text color in input */
+            border: 1px solid #555; /* Darker border for input */
+        }
+
+        #activityInput {
+            width: 60%;
+        }
+
+        #activityList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #777; /* Darker border for activities */
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .activity-item button {
+            background-color: #ff4500; /* Orange-Red button color for activities */
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 12px;
+        }
+
+        .activity-item button:hover {
+            background-color: #ff6347; /* Lighter orange-red for hover effect */
+        }
+
+        .activity-item.selected {
+            background-color: #444; /* Dark gray background for selected item */
+        }
+    </style>
+</head>
+<body>
+    <h1>Eficacia Pomodoro</h1>
+    <audio id="alertSound" src="alert.mp3"></audio>
+    <div id="timer">25:00</div>
+    
+    <div id="buttons">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <div id="settings">
+        <h2>Settings</h2>
+        <label for="pomodoroTime">Pomodoro Time (MM:SS): </label>
+        <input type="text" id="pomodoroTime" placeholder="Enter time">
+        <button onclick="applySettings()">Apply</button>
+    </div>
+
+    <div id="activities">
+        <h2>Activities</h2>
+        <input type="text" id="activityInput" placeholder="Activity Name">
+        <button onclick="addActivity()">Add Activity</button>
+        <ul id="activityList"></ul>
+    </div>
+    <script>
+        let timer;
+        let totalSeconds = 1500; // 25 minutes by default
+        let isPaused = true;
+        let currentActivity = null;
+        let pomodoroCount = 0;
+
+        // Cargar actividades almacenadas al cargar la página
+        window.addEventListener("load", loadStoredActivities);
+
+        function startTimer() {
+            const selectedActivity = document.querySelector('.activity-item.selected');
+            if (isPaused) {
+                if (selectedActivity) {
+                    currentActivity = selectedActivity.id;
+                } else {
+                    currentActivity = document.getElementById("activityInput").value;
+                }
+                if (currentActivity.trim() !== "") {
+                    timer = setInterval(updateTimer, 1000);
+                    isPaused = false;
+                }
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timer);
+            isPaused = true;
+        }
+
+        function resetTimer() {
+            pauseTimer(); // Added to pause the timer after reset
+            totalSeconds = parseTime(document.getElementById("pomodoroTime").value) || 1500;
+            updateDisplay();
+            // No se inicia automáticamente al resetear
+        }
+
+        function updateTimer() {
+            if (totalSeconds === 0) {
+                clearInterval(timer);
+                pomodoroCount++;
+                updateActivityList();
+                // Reproducir el sonido de alerta cuando se completa un pomodoro
+                document.getElementById('alertSound').play();
+                resetTimer();
+            } else {
+                totalSeconds--;
+                updateDisplay();
+            }
+        }
+
+        function applySettings() {
+            resetTimer();
+        }
+
+        function parseTime(timeString) {
+            const timeArray = timeString.split(":");
+            if (timeArray.length === 2) {
+                const minutes = parseInt(timeArray[0], 10) || 0;
+                const seconds = parseInt(timeArray[1], 10) || 0;
+                return minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function updateDisplay() {
+            const displayMinutes = Math.floor(totalSeconds / 60);
+            const displaySeconds = totalSeconds % 60;
+            const formattedMinutes = displayMinutes < 10 ? "0" + displayMinutes : displayMinutes;
+            const formattedSeconds = displaySeconds < 10 ? "0" + displaySeconds : displaySeconds;
+            document.getElementById("timer").innerText = `${formattedMinutes}:${formattedSeconds}`;
+        }
+
+        function addActivity() {
+            const activityName = document.getElementById("activityInput").value;
+            if (activityName.trim() !== "") {
+                const activityList = document.getElementById("activityList");
+                const existingActivityItem = document.getElementById(activityName);
+
+                if (!existingActivityItem) {
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("activity-item");
+                    listItem.id = activityName;
+                    listItem.innerHTML = `${activityName}: <span data-count="0">0</span> Pomodoros
+                        <button onclick="editActivity('${activityName}')">Edit</button>
+                        <button onclick="deleteActivity('${activityName}')">Delete</button>`;
+                    listItem.addEventListener("click", (event) => selectActivity(activityName, event));
+                    activityList.appendChild(listItem);
+                    storeActivity(activityName, 0);
+                }
+
+                // Limpiar el campo de entrada
+                document.getElementById("activityInput").value = "";
+            }
+        }
+
+        function editActivity(activityName) {
+            const newName = prompt("Enter a new name for the activity:", activityName);
+            if (newName && newName.trim() !== "") {
+                const activityItem = document.getElementById(activityName);
+                activityItem.id = newName;
+                activityItem.innerHTML = `${newName}: ${activityItem.querySelector('span').innerText} Pomodoros
+                    <button onclick="editActivity('${newName}')">Edit</button>
+                    <button onclick="deleteActivity('${newName}')">Delete</button>`;
+                updateActivityNameInStorage(activityName, newName);
+            }
+        }
+
+        function deleteActivity(activityName) {
+            //const confirmation = confirm(`Are you sure you want to delete the activity "${activityName}"?`);
+            const activityItem = document.getElementById(activityName);
+            activityItem.remove();
+            removeActivityFromStorage(activityName);
+            // if (confirmation) {
+            //     const activityItem = document.getElementById(activityName);
+            //     activityItem.remove();
+            //     removeActivityFromStorage(activityName);
+            // }
+        }
+
+        function updateActivityList() {
+            const activityList = document.getElementById("activityList");
+            const existingActivityItem = document.getElementById(currentActivity);
+
+            if (existingActivityItem) {
+                const existingCount = parseInt(existingActivityItem.querySelector('span').dataset.count, 10) || 0;
+                existingActivityItem.querySelector('span').dataset.count = existingCount + 1;
+                existingActivityItem.querySelector('span').innerText = existingCount + 1;
+                updateActivityCountInStorage(currentActivity, existingCount + 1);
+            } else {
+                const listItem = document.createElement("li");
+                listItem.classList.add("activity-item");
+                listItem.id = currentActivity;
+                listItem.innerHTML = `${currentActivity}: <span data-count="1">1</span> Pomodoro
+                    <button onclick="editActivity('${currentActivity}')">Edit</button>
+                    <button onclick="deleteActivity('${currentActivity}')">Delete</button>`;
+                listItem.addEventListener("click", (event) => selectActivity(currentActivity, event));
+                activityList.appendChild(listItem);
+                storeActivity(currentActivity, 1);
+            }
+        }
+
+        function selectActivity(activityName, event) {
+            event.stopPropagation();
+
+            const activityItems = document.querySelectorAll('.activity-item');
+            activityItems.forEach(item => item.classList.remove('selected'));
+
+            const selectedActivity = document.getElementById(activityName);
+            selectedActivity.classList.add('selected');
+
+            currentActivity = activityName;
+        }
+
+        // Funciones para el almacenamiento local
+        function storeActivity(activityName, count) {
+            const storedActivities = getStoredActivities();
+            storedActivities[activityName] = count;
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function removeActivityFromStorage(activityName) {
+            const storedActivities = getStoredActivities();
+            delete storedActivities[activityName];
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function updateActivityNameInStorage(oldName, newName) {
+            const storedActivities = getStoredActivities();
+            storedActivities[newName] = storedActivities[oldName];
+            delete storedActivities[oldName];
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function updateActivityCountInStorage(activityName, count) {
+            const storedActivities = getStoredActivities();
+            storedActivities[activityName] = count;
+            localStorage.setItem("pomodoroActivities", JSON.stringify(storedActivities));
+        }
+
+        function getStoredActivities() {
+            const storedActivitiesString = localStorage.getItem("pomodoroActivities");
+            return storedActivitiesString ? JSON.parse(storedActivitiesString) : {};
+        }
+
+        function loadStoredActivities() {
+            const storedActivities = getStoredActivities();
+            const activityList = document.getElementById("activityList");
+
+            for (const [activityName, count] of Object.entries(storedActivities)) {
+                const listItem = document.createElement("li");
+                listItem.classList.add("activity-item");
+                listItem.id = activityName;
+                listItem.innerHTML = `${activityName}: <span data-count="${count}">${count}</span> Pomodoros
+                    <button onclick="editActivity('${activityName}')">Edit</button>
+                    <button onclick="deleteActivity('${activityName}')">Delete</button>`;
+                listItem.addEventListener("click", (event) => selectActivity(activityName, event));
+                activityList.appendChild(listItem);
+            }
+        }
+    </script>
+</body>
+</html>

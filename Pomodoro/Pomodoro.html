@@ -244,12 +244,15 @@
         }
 
         function deleteActivity(activityName) {
-            const confirmation = confirm(`Are you sure you want to delete the activity "${activityName}"?`);
-            if (confirmation) {
-                const activityItem = document.getElementById(activityName);
-                activityItem.remove();
-                removeActivityFromStorage(activityName);
-            }
+            //const confirmation = confirm(`Are you sure you want to delete the activity "${activityName}"?`);
+            const activityItem = document.getElementById(activityName);
+            activityItem.remove();
+            removeActivityFromStorage(activityName);
+            // if (confirmation) {
+            //     const activityItem = document.getElementById(activityName);
+            //     activityItem.remove();
+            //     removeActivityFromStorage(activityName);
+            // }
         }
 
         function updateActivityList() {
