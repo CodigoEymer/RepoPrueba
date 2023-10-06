@@ -1,0 +1,325 @@
+﻿/*-----------------------------------------------------------------------------------------------------------------------------------------------
+Compañia: 		Eficacia S.A
+Proceso:		
+Desarrollador: 	
+Fecha			2023/08/22 (YYYY/MM/DD)
+-----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*----BAYER ----*/
+Tipo_Desarrollo:
+      LOAD
+          CADENA,
+          TIPO,
+          DEPENDIENTES,
+          PDV
+
+      FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/ADVOCACY DESARROLLO.xlsx]
+      (ooxml, embedded labels, table is Hoja1);
+
+STORE Tipo_Desarrollo INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_TipoDesarrollo.qvd] (qvd);
+Drop Table Tipo_Desarrollo;
+
+Metas:
+	LOAD 
+		[ID PDV], 
+		[TOTAL DEPENDIENTES]
+	FROM
+	[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Metas Advocacy.xlsx]
+	(ooxml, embedded labels, table is [Advocacy Moderno]);
+    
+STORE Metas INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_MetasAdvocacy.qvd] (qvd);
+Drop Table Metas;
+
+Exhibiciones:
+    LOAD
+        [EXHIBICIÓN SGI],
+        VALOR                                               						
+    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/VALOR_EXHIBICIONES_POR_GESTION.xlsx]
+    (ooxml, embedded labels, table is Hoja1);
+
+STORE Exhibiciones INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Exhibiciones.qvd] (qvd);
+Drop Table Exhibiciones;
+
+Orden_Preguntas:
+	LOAD 
+		Orden, 
+		Pregunta
+	FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Banco Conocimiento.xlsx]
+	(ooxml, embedded labels, table is [Orden Preguntas]);
+
+STORE Orden_Preguntas INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Orden_Preguntas.qvd] (qvd);
+Drop Table Orden_Preguntas;
+
+RespuestaCorrecta:
+		LOAD 
+			Orden,
+      RESPUESTA, 
+			Calificacion
+		FROM
+		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Banco Conocimiento.xlsx]
+		(ooxml, embedded labels, table is [Respuestas Correctas]);
+
+STORE RespuestaCorrecta INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_RespuestaCorrecta.qvd] (qvd);
+Drop Table RespuestaCorrecta;
+
+ExhibicionesGestion:
+		LOAD 
+			CONCA,
+			HOMOLOGACION
+		FROM 
+	[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/HOMOLOGACION PC+GESTION.xlsx]
+	(ooxml, embedded labels, table is [EXH POR GESTION]);
+
+STORE ExhibicionesGestion INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_ExhibicionesGestion.qvd] (qvd);
+Drop Table ExhibicionesGestion;
+
+Ispos:
+    LOAD 
+      ENCUESTA_ID,
+      FORMATO,
+      ORDEN_PREGUNTA,
+      PREGUNTA,
+      BLOQUE																				 
+    FROM
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Base Preguntas ISPOS.xlsx]
+    (ooxml, embedded labels, table is [ISPOS]);
+
+STORE Ispos INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Ispos.qvd] (qvd);
+Drop Table Ispos;
+
+IsposPreguntas:
+		LOAD Distinct
+			FORMATO,
+      PREGUNTA,
+      RESPUESTA,
+			CATEGORIA,
+      PUNTOS,
+      MARCA
+		FROM
+		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Base Preguntas ISPOS.xlsx]
+		(ooxml, embedded labels, table is PREGUNTAS);
+
+STORE IsposPreguntas INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_IsposPreguntas.qvd] (qvd);
+Drop Table IsposPreguntas;
+
+ProductosEspejo:
+    LOAD 
+        ID_PRODUCTO_COMPETENCIA,
+    	  ID_Producto,
+        INDEX		                                  
+    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Index.xlsx]
+    (ooxml, embedded labels, table is [Hoja2]); 
+
+STORE ProductosEspejo INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_ProductosEspejo.qvd] (qvd);
+Drop Table ProductosEspejo;
+
+Unidad:
+      LOAD
+          ID_Producto,
+          Unidades
+      FROM
+      [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Index.xlsx]
+      (ooxml, embedded labels, table is propio);
+
+STORE Unidad INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Unidad.qvd] (qvd);
+Drop Table Unidad;
+
+Max_Min_General:
+    LOAD
+        [ID PRODUCTO],
+        MIN,
+        MAX,
+        MEDIA			
+    FROM
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Max-Min.xlsx]
+    (ooxml, embedded labels, table is general);
+
+STORE Max_Min_General INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Max_Min_General.qvd] (qvd);
+Drop Table Max_Min_General;
+
+Max_Min_Alkosto:
+    LOAD
+        [ID PRODUCTO],
+        MIN,
+        MAX,
+        MEDIA			
+    FROM
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Max-Min.xlsx]
+    (ooxml, embedded labels, table is [Alkosto & Makro]);
+
+STORE Max_Min_Alkosto INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Max_Min_Alkosto.qvd] (qvd);
+Drop Table Max_Min_Alkosto;
+
+Max_Min_Exito:
+    LOAD
+        ID,
+        [NUEVO MIN],
+        [NUEVO MAX],
+        MEDIA			       
+    FROM
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Max-Min.xlsx]
+    (ooxml, embedded labels, table is Exito);  
+
+STORE Max_Min_Exito INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Max_Min_Exito.qvd] (qvd);
+Drop Table Max_Min_Exito;
+
+MiniMercados_Data:
+      LOAD
+          PRODUCTO,
+          CATEGORIA,
+          MARCA
+      FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/MiniMercados.xlsx]
+      (ooxml, embedded labels, table is DATA);
+
+STORE MiniMercados_Data INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_MiniMercados_Data.qvd] (qvd);
+Drop Table MiniMercados_Data;
+
+MiniMercados_Ciudad:
+      LOAD
+          ID_ASESOR,
+          CIUDAD
+      FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/MiniMercados.xlsx]
+      (ooxml, embedded labels, table is CIUDAD);
+
+STORE MiniMercados_Ciudad INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_MiniMercados_Ciudad.qvd] (qvd);
+Drop Table MiniMercados_Ciudad;
+
+MiniMercados_Precio:
+      LOAD
+          PRODUCTO,
+          PRECIO
+      FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/MiniMercados.xlsx]
+      (ooxml, embedded labels, table is PRECIOS);
+
+STORE MiniMercados_Precio INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_MiniMercados_Precio.qvd] (qvd);
+Drop Table MiniMercados_Precio;
+
+MarcaPareto:
+      LOAD 
+        [MARCA PARETO], 
+        OBJETIVO
+      FROM
+      [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)\SGI\Colombia\BAYER\SOS MARCAS PARETO Y OBJETIVO.xlsx]
+      (ooxml, embedded labels, table is Hoja1);
+
+STORE MarcaPareto INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_MarcaPareto.qvd] (qvd);
+Drop Table MarcaPareto;
+
+Nielsen:
+		LOAD
+			CIUDAD,
+			"ZONA NIELSEN"			
+		FROM 
+		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Cruce_Nilsen.xlsx]
+		(ooxml, embedded labels, table is DIC);
+
+STORE Nielsen INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Nielsen.qvd] (qvd);
+Drop Table Nielsen;
+
+Homologacion_Categoria:
+		LOAD
+			"CATEGORÍA",
+			"CATEGORÍA REAL",
+      SUBCATEGORIA,
+      MARCA,
+			"MARCA REAL",
+      "EMPRESA REAL"
+		FROM 
+		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Homologacion_Categorias.xlsx]
+		(ooxml, embedded labels, table is CATEGO);
+
+STORE Homologacion_Categoria INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Homologacion_Categoria.qvd] (qvd);
+Drop Table Homologacion_Categoria;
+
+Segmento:
+		LOAD
+			EMPRESA,
+			SEGMENTO 
+		FROM 
+		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/MARCA_SEGMENTO.xlsx]
+		(ooxml, embedded labels, table is DATA);
+
+STORE Segmento INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Segmento.qvd] (qvd);
+Drop Table Segmento;
+
+Clasificacion:
+		LOAD 
+		    Clasificación, 
+        Flag
+    FROM
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Clasificacion.xlsx]
+    (ooxml, embedded labels, table is Hoja1);
+
+STORE Clasificacion INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Clasificacion.qvd] (qvd);
+Drop Table Clasificacion;
+
+Objetivo_Participacion:
+    LOAD 
+      SUBCANAL,
+      NIELSEN,
+      SEGMENTO,
+      [MARCA REAL], 
+      OBJETIVO	
+    FROM
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Objetivos_Participacion.xlsx]
+    (ooxml, embedded labels, table is ObjetivoNew);
+
+STORE Objetivo_Participacion INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Objetivo_Participacion.qvd] (qvd);
+Drop Table Objetivo_Participacion;
+
+TipoImplementacion:
+		LOAD
+			SUBTIPO_IMPLEMENTACION,
+			TIPO 
+    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/HOMOLOGACIÓN TIPOS DE EXHIBICION.xlsx]
+	  (ooxml, embedded labels, table is Hoja1);
+
+STORE TipoImplementacion INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_TipoImplementacion.qvd] (qvd);
+Drop Table TipoImplementacion;
+
+SubtipoImplementacion:
+		LOAD
+			EHXIBICION,
+			MARCA
+    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/QS VISUAL PLANES MEXANA MEDICAL.xlsx]
+    (ooxml, embedded labels, table is Hoja1);	
+
+STORE SubtipoImplementacion INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_SubtipoImplementacion.qvd] (qvd);
+Drop Table SubtipoImplementacion;
+
+Ubicacion:
+		LOAD
+			EHXIBICION,
+			UBICACIÓN
+	FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Homologacion ubicacion.xlsx]
+	(ooxml, embedded labels, table is Hoja1);
+
+STORE Ubicacion INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Ubicacion.qvd] (qvd);
+Drop Table Ubicacion;
+
+FotosPlanes:
+    LOAD 
+        "Nombre Plan",
+        Cadena,
+        "Punto Venta",
+        Marca,
+        "Sub Tipo Implementación",
+        Foto
+    FROM
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Cargue Fotos PlanesComerciales.xlsx]
+    (ooxml, embedded labels, table is Hoja1);
+
+STORE FotosPlanes INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_FotosPlanes.qvd] (qvd);
+Drop Table FotosPlanes;
+
+Georeferencia:
+    LOAD
+        Nombre,
+        Latitud,
+        Longitud
+    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\Georeferencia.xlsx]
+    (ooxml, embedded labels, table is Hoja1);
+
+STORE Georeferencia INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Georeferencia.qvd] (qvd);
+Drop Table Georeferencia;
+
+
