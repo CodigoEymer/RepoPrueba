@@ -112,7 +112,7 @@
 </head>
 <body>
     <h1>Pomodoro App</h1>
-    
+    <audio id="alertSound" src="alert.mp3"></audio>
     <div id="timer">25:00</div>
     
     <div id="buttons">
@@ -177,6 +177,8 @@
                 clearInterval(timer);
                 pomodoroCount++;
                 updateActivityList();
+                // Reproducir el sonido de alerta cuando se completa un pomodoro
+                document.getElementById('alertSound').play();
                 resetTimer();
             } else {
                 totalSeconds--;
