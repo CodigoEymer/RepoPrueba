@@ -23,7 +23,7 @@ Metas:
 		[ID PDV], 
 		[TOTAL DEPENDIENTES]
 	FROM
-	[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Metas Advocacy.xlsx]
+	[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Metas Advocacy.xlsx]
 	(ooxml, embedded labels, table is [Advocacy Moderno]);
     
 STORE Metas INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_MetasAdvocacy.qvd] (qvd);
@@ -43,7 +43,7 @@ Orden_Preguntas:
 	LOAD 
 		Orden, 
 		Pregunta
-	FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Banco Conocimiento.xlsx]
+	FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Banco Conocimiento.xlsx]
 	(ooxml, embedded labels, table is [Orden Preguntas]);
 
 STORE Orden_Preguntas INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Orden_Preguntas.qvd] (qvd);
@@ -55,7 +55,7 @@ RespuestaCorrecta:
       RESPUESTA, 
 			Calificacion
 		FROM
-		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Banco Conocimiento.xlsx]
+		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Banco Conocimiento.xlsx]
 		(ooxml, embedded labels, table is [Respuestas Correctas]);
 
 STORE RespuestaCorrecta INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_RespuestaCorrecta.qvd] (qvd);
@@ -95,7 +95,7 @@ IsposPreguntas:
       PUNTOS,
       MARCA
 		FROM
-		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Base Preguntas ISPOS.xlsx]
+		[lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Base Preguntas ISPOS.xlsx]
 		(ooxml, embedded labels, table is PREGUNTAS);
 
 STORE IsposPreguntas INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_IsposPreguntas.qvd] (qvd);
@@ -106,7 +106,7 @@ ProductosEspejo:
         ID_PRODUCTO_COMPETENCIA,
     	  ID_Producto,
         INDEX		                                  
-    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Index.xlsx]
+    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Precios Index.xlsx]
     (ooxml, embedded labels, table is [Hoja2]); 
 
 STORE ProductosEspejo INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_ProductosEspejo.qvd] (qvd);
@@ -117,7 +117,7 @@ Unidad:
           ID_Producto,
           Unidades
       FROM
-      [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Index.xlsx]
+      [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Precios Index.xlsx]
       (ooxml, embedded labels, table is propio);
 
 STORE Unidad INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Unidad.qvd] (qvd);
@@ -130,7 +130,7 @@ Max_Min_General:
         MAX,
         MEDIA			
     FROM
-    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Max-Min.xlsx]
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Precios Max-Min.xlsx]
     (ooxml, embedded labels, table is general);
 
 STORE Max_Min_General INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Max_Min_General.qvd] (qvd);
@@ -143,7 +143,7 @@ Max_Min_Alkosto:
         MAX,
         MEDIA			
     FROM
-    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Max-Min.xlsx]
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Precios Max-Min.xlsx]
     (ooxml, embedded labels, table is [Alkosto & Makro]);
 
 STORE Max_Min_Alkosto INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Max_Min_Alkosto.qvd] (qvd);
@@ -156,7 +156,7 @@ Max_Min_Exito:
         [NUEVO MAX],
         MEDIA			       
     FROM
-    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Precios Max-Min.xlsx]
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Precios Max-Min.xlsx]
     (ooxml, embedded labels, table is Exito);  
 
 STORE Max_Min_Exito INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Max_Min_Exito.qvd] (qvd);
@@ -198,7 +198,7 @@ MarcaPareto:
         [MARCA PARETO], 
         OBJETIVO
       FROM
-      [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)\SGI\Colombia\BAYER\SOS MARCAS PARETO Y OBJETIVO.xlsx]
+      [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/SOS MARCAS PARETO Y OBJETIVO.xlsx]
       (ooxml, embedded labels, table is Hoja1);
 
 STORE MarcaPareto INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_MarcaPareto.qvd] (qvd);
@@ -260,7 +260,7 @@ Objetivo_Participacion:
       [MARCA REAL], 
       OBJETIVO	
     FROM
-    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\BAYER\Objetivos_Participacion.xlsx]
+    [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/BAYER/Objetivos_Participacion.xlsx]
     (ooxml, embedded labels, table is ObjetivoNew);
 
 STORE Objetivo_Participacion INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Objetivo_Participacion.qvd] (qvd);
@@ -316,7 +316,7 @@ Georeferencia:
         Nombre,
         Latitud,
         Longitud
-    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia\Georeferencia.xlsx]
+    FROM [lib://COMP_SharePoint_Internal (eficacia_admin_analitica)/SGI/Colombia/Georeferencia.xlsx]
     (ooxml, embedded labels, table is Hoja1);
 
 STORE Georeferencia INTO [lib://COMP_Stage (eficacia_admin_analitica)/SGI/Colombia/BAYER/Sh_Georeferencia.qvd] (qvd);
