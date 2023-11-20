@@ -3,7 +3,7 @@ Compañia: 		Eficacia S.A
 Proceso:		Transformacion PlanesComerciales
 Desarrollador: 	William Alejandro Giraldo Zuluaga
 Email:			William_giraldo@Eficacia.com.co
-Fecha			2020/11/10 (YYYY/MM/DD): NUevo cambio 3
+Fecha			2020/11/10 (YYYY/MM/DD): NUevo cambio 4
 -----------------------------------------------------------------------------------------------------------------------------------------------*/
 NullAsValue URL_FOTO;
 set NullValue='Sin Foto';
